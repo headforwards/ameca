@@ -14,7 +14,7 @@
 
 	<footer>
 		<p>
-			visit our <a href="https://www.headforwards.com/digital-academy/">digital academy</a> to learn about how you could do this perfesionally! 
+			visit our <a href="https://www.headforwards.com/digital-academy/">digital academy</a> to learn about how you could do this professionally! 
 		</p>
 	</footer>
 </div>

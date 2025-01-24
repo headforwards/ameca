@@ -54,6 +54,7 @@
     width: 100%;
     height: 100%;
     background-color: transparent;
+    transition: none;
 }
 .corner img {
     width: 2em;

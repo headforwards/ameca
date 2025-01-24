@@ -44,15 +44,15 @@
 	}
 
 	h1 {
-		width: 100%;
+		width: 80%;
 	}
 
 	.welcome {
 		display: block;
 		position: relative;
 		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
+		height: 100%;
+		padding: 0 0 25% 0;
         margin-bottom: 50px;
 	}
 

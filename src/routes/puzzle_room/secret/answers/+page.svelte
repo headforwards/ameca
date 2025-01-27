@@ -39,16 +39,16 @@
       <section class="solution-section">
         <h2>Area 2: Timing Challenge</h2>
         <div class="solution-content">
-          <p class="hint">"Time is of the essence..."</p>
+          <p class="hint">"Click when the timer is even!"</p>
           <div class="solution-steps">
             <h3>Solution:</h3>
             <ol>
-              <li>Click "Investigate Area 2" when the system time milliseconds end in 0</li>
+              <li>Click "Investigate Area 2" when timer says "click now"</li>
               <li>This requires precise timing</li>
               <li>Success depends on clicking at exactly the right moment</li>
             </ol>
             <div class="note">
-              Tip: Try clicking rhythmically to increase your chances of hitting the right millisecond
+              Tip: Watch the timer closely and be ready to click, its when its divisble by 2 so shouldnt be hard!
             </div>
           </div>
         </div>
@@ -57,16 +57,17 @@
       <section class="solution-section">
         <h2>Area 3: Sequence Challenge</h2>
         <div class="solution-content">
-          <p class="hint">"The path must be prepared..."</p>
+          <p class="hint">"Match the target frequency..."</p>
           <div class="solution-steps">
             <h3>Solution:</h3>
             <ol>
               <li>Complete Area 1 challenge first</li>
               <li>Complete Area 2 challenge</li>
               <li>Only then will Area 3 become completable</li>
+              <li>Youll have to hit the target frequency to unlock the hidden panel!</li>
             </ol>
             <div class="note">
-              Important: Clicking Area 3 before completing the others will reset progress
+              Important: 👀™️🦆
             </div>
           </div>
         </div>

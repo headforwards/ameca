@@ -1,6 +1,5 @@
-<!-- src/routes/demoGame/+page.svelte -->
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import Target from '$lib/components/game/Target.svelte';
   import GameStats from '$lib/components/game/GameStats.svelte';
   import StartScreen from '$lib/components/game/StartScreen.svelte';

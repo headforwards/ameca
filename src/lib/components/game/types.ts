@@ -16,4 +16,6 @@ export const GAME_SETTINGS = {
 	SCREEN_MARGIN: 20
 } as const;
 
+export const TARGET_FREQUENCY = 42;
+
 export type ButtonType = "button" | "submit" | "reset";

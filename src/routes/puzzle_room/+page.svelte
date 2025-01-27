@@ -1,52 +1,93 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
   import Button from '$lib/components/ui/Button.svelte';
+  import TimerSection from '$lib/components/game/sections/TimerSection.svelte';
+  import HintSection from '$lib/components/game/sections/HintSection.svelte';
+  import FrequencyControls from '$lib/components/game/FrequencyControls.svelte';
+  import { onDestroy } from 'svelte';
+  import { TARGET_FREQUENCY } from '$lib/components/game/types';
 
   let isHiddenVisible = false;
-  let clickCount = 0;
   let sequence = [false, false, false];
   let showError = false;
+  let clickCount = 0;
+  let currentFrequency = 0;
   let lastClickTime = 0;
-  
-  // Hidden element will only show when all conditions are met
+  let timer = 0;
+  let timerInterval: ReturnType<typeof setInterval>;
+  let showArea3Controls = false;
+
+  // Timers
+  function startTimer() {
+    timer = 0;
+    timerInterval = setInterval(() => {
+      timer++;
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+  }
+
+  // Reactive decs
   $: isHiddenVisible = sequence.every(s => s);
+  $: showArea3Controls = sequence[0] && sequence[1] && !sequence[2];
+  $: {
+    if (sequence[0] && !sequence[1]) {
+      startTimer();
+    } else {
+      stopTimer();
+    }
+  }
+
+  // Game logic 
+  function resetSequence() {
+    sequence = [false, false, false];
+    clickCount = 0;
+    showError = true;
+    currentFrequency = 0;
+    setTimeout(() => showError = false, 2000);
+  }
 
   function handleButtonClick(index: number) {
     const currentTime = Date.now();
-    
-    // Reset sequence if clicking too fast
-    if (currentTime - lastClickTime < 800) {
-      sequence = [false, false, false];
-      showError = true;
-      setTimeout(() => showError = false, 2000);
-      return;
-    }
-    
-    lastClickTime = currentTime;
-    clickCount++;
 
-    // Different conditions for each button
-    switch(index) {
-      case 0:
-        // First button needs exactly 3 clicks
-        sequence[0] = clickCount % 3 === 0;
-        break;
-      case 1:
-        // Second button needs to be clicked when time milliseconds end in 0
-        sequence[1] = currentTime % 10 === 0;
-        break;
-      case 2:
-        // Third button needs to be clicked after the others
-        sequence[2] = sequence[0] && sequence[1];
-        break;
+    if (index === 0) {
+      if (currentTime - lastClickTime < 800) {
+        resetSequence();
+        return;
+      }
+      lastClickTime = currentTime;
+      clickCount++;
+      sequence[0] = clickCount === 3;
     }
 
-    // Reset if wrong sequence
-    if (!sequence[index]) {
-      const otherIndices = [0, 1, 2].filter(i => i !== index);
-      otherIndices.forEach(i => sequence[i] = false);
+    if (index === 1) {
+      if (sequence[0] && timer % 2 === 0) {
+        sequence[1] = true;
+      } else {
+        resetSequence();
+      }
+    }
+
+    if (index === 2 && showArea3Controls) {
+      if (currentFrequency === TARGET_FREQUENCY) {
+        sequence[2] = true;
+      } else {
+        resetSequence();
+      }
     }
   }
+
+  function adjustFrequency(amount: number) {
+    currentFrequency = Math.max(0, Math.min(100, currentFrequency + amount));
+  }
+
+  onDestroy(() => {
+    stopTimer();
+  });
 </script>
 
 <div class="puzzle-container">
@@ -58,60 +99,47 @@
       <Button 
         on:click={() => handleButtonClick(0)}
         dataTestId="puzzle-button-1"
+        disabled={sequence[0]} 
       >
-        Investigate Area 1
+        {sequence[0] ? 'Area 1 Secured' : 'Investigate Area 1'}
       </Button>
 
       <Button 
         on:click={() => handleButtonClick(1)}
         dataTestId="puzzle-button-2"
+        disabled={sequence[1] || !sequence[0]} 
       >
-        Investigate Area 2
+        {sequence[1] ? 'Area 2 Secured' : 'Investigate Area 2'}
       </Button>
 
       <Button 
         on:click={() => handleButtonClick(2)}
         dataTestId="puzzle-button-3"
+        disabled={sequence[2] || !sequence[1]} 
       >
-        Investigate Area 3
+        {sequence[2] ? 'Area 3 Secured' : 'Investigate Area 3'}
       </Button>
     </div>
 
     {#if showError}
       <p class="error" transition:fly={{ y: 20, duration: 300 }}>
-        Too fast! The investigation requires patience...
+        Investigation failed! Try again... (The investigation requires patience...)
       </p>
     {/if}
 
-    <div class="hint-section">
-      <p class="hint">Investigation notes:</p>
-      <ul>
-        <li class="hint-item">
-          <span class="hint-text">Area 1: "Patterns repeat in threes..."</span>
-          {#if sequence[0]}
-            <span class="check" transition:fly={{ x: 20, duration: 300 }}>
-              ✅
-            </span>
-          {/if}
-        </li>
-        <li class="hint-item">
-          <span class="hint-text">Area 2: "Time is of the essence..."</span>
-          {#if sequence[1]}
-            <span class="check" transition:fly={{ x: 20, duration: 300 }}>
-              ✅
-            </span>
-          {/if}
-        </li>
-        <li class="hint-item">
-          <span class="hint-text">Area 3: "The path must be prepared..."</span>
-          {#if sequence[2]}
-            <span class="check" transition:fly={{ x: 20, duration: 300 }}>
-               ✅
-            </span>
-          {/if}
-        </li>
-      </ul>
-    </div>
+    {#if sequence[0] && !sequence[1]}
+      <TimerSection {timer} />
+    {/if}
+
+    {#if showArea3Controls}
+      <FrequencyControls
+        {currentFrequency}
+        targetFrequency={TARGET_FREQUENCY}
+        onAdjust={adjustFrequency}
+      />
+    {/if}
+
+    <HintSection {sequence} />
   </div>
 
   {#if isHiddenVisible}
@@ -147,6 +175,12 @@
     margin-bottom: 2rem;
   }
 
+  .error {
+    color: #cc0000;
+    margin-top: 1rem;
+    text-align: center;
+  }
+
   .hidden-element {
     margin-top: 2rem;
     padding: 1rem;
@@ -170,46 +204,5 @@
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
-  }
-
-  .error {
-    color: #cc0000;
-    margin-top: 1rem;
-    text-align: center;
-  }
-
-  .hint-section {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: var(--color-theme-3);
-    border-radius: 4px;
-  }
-
-  .hint {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  .hint-item {
-    margin: 0.5rem 0;
-    color: var(--color-theme-1);
-    font-style: italic;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .hint-text {
-    flex: 1;
-  }
-
-  .check {
-    display: inline-flex;
-    align-items: center;
   }
 </style>

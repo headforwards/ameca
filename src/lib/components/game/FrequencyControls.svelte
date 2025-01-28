@@ -6,14 +6,14 @@
 </script>
 
 <div class="area3-controls" transition:fly={{ y: 20, duration: 300 }}>
-  <p class="target-frequency">Target Frequency: {targetFrequency}</p>
+  <p class="target-frequency">Target Frequency: <span data-testid="frequency-target">{targetFrequency}</span></p>
   <p>Current Frequency: {currentFrequency}</p>
   <div class="frequency-controls">
-    <button class="adjust-btn" on:click={() => onAdjust(-10)}>-10</button>
-    <button class="adjust-btn" on:click={() => onAdjust(-1)}>-1</button>
-    <div class="frequency-display">{currentFrequency}</div>
-    <button class="adjust-btn" on:click={() => onAdjust(1)}>+1</button>
-    <button class="adjust-btn" on:click={() => onAdjust(10)}>+10</button>
+    <button class="adjust-btn" data-testid="frequency-minus-ten" on:click={() => onAdjust(-10)}>-10</button>
+    <button class="adjust-btn" data-testid="frequency-minus-one" on:click={() => onAdjust(-1)}>-1</button>
+    <div class="frequency-display" data-testid="current-frequency">{currentFrequency}</div>
+    <button class="adjust-btn" data-testid="frequency-plus-one" on:click={() => onAdjust(1)}>+1</button>
+    <button class="adjust-btn" data-testid="frequency-plus-ten" on:click={() => onAdjust(10)}>+10</button>
   </div>
   <p class="hint-text">Match the target frequency and click "Investigate Area 3"</p>
 </div>

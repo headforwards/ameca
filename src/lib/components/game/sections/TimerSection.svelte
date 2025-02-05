@@ -5,9 +5,9 @@
 </script>
 
 <div class="timer-section">
-  <p>Timer: {timer}</p>
+  <p  data-testid="puzzle-time">Timer: {timer}</p>
   {#if timer % 2 === 0}
-    <p class="flash" transition:fly={{ y: 20, duration: 300 }}>
+    <p class="flash" data-testid="puzzle-timer-peekaboo" transition:fly={{ y: 20, duration: 300 }}>
       Click now!
     </p>
   {/if}

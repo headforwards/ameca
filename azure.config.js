@@ -1,11 +1,5 @@
-import { vitePreprocess } from 'svelte-adapter-azure-swa';
-
-let adapter;
-if (process.env.GITHUB_ACTIONS) {
-    adapter = require('svelte-adapter-azure-swa').default;
-} else {
-    adapter = require('@sveltejs/adapter-auto').default;
-}
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import adapter from 'svelte-adapter-azure-swa';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {

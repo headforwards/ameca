@@ -3,7 +3,7 @@
 describe("Target Practice Shoot em up 🎯", () => {
 	beforeEach(() => {
 		cy.visit(
-			"https://white-mud-007637c03.4.azurestaticapps.net/target_practise"
+			"https://workshop.headforwards.com/target_practise"
 		).wait(1000);
 	});
 
